@@ -3,6 +3,7 @@ package org.hogel.android.simplepainting;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import org.hogel.android.simplepainting.view.PaintView;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -21,8 +22,8 @@ public class PaintActivity extends RoboActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class PaintActivity extends RoboActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        final int id = item.getItemId();
 
         if (id == R.id.action_settings) {
             return true;
