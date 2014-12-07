@@ -27,6 +27,7 @@ public class Line implements Serializable {
             return;
         }
         points.add(point);
+        supplementPoints();
     }
 
     public Path toPath() {
@@ -42,5 +43,18 @@ public class Line implements Serializable {
             path.lineTo(point.x, point.y);
         }
         return path;
+    }
+
+    private void supplementPoints() {
+        final int size = points.size();
+        if (size < 3) {
+            return;
+        }
+        final Point point1 = points.get(size - 3);
+        final Point point2 = points.get(size - 2);
+        final Point point3 = points.get(size - 1);
+
+        point2.x = (point1.x + point2.x + point3.x) / 3;
+        point2.y = (point1.y + point2.y + point3.y) / 3;
     }
 }
