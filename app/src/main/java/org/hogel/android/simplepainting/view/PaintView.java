@@ -26,7 +26,7 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
         void touchUp(float x, float y);
     }
 
-    private static final float DEFAULT_WIDTH = 8.0f;
+    private static final float DEFAULT_WIDTH = 16.0f;
 
     private static final int DEFAULT_BACKGROUND = Color.WHITE;
 

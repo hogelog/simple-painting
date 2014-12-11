@@ -45,6 +45,16 @@ public class Line implements Serializable {
         return path;
     }
 
+    public float[] toArray() {
+        final float[] array = new float[points.size() * 2];
+        for (int i = 0; i < points.size(); ++i) {
+            final Point point = points.get(i);
+            array[i * 2] = point.x;
+            array[i * 2 + 1] = point.y;
+        }
+        return array;
+    }
+
     private void supplementPoints() {
         final int size = points.size();
         if (size < 3) {
