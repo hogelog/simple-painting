@@ -1,25 +1,25 @@
 package org.hogel.android.simplepainting.model;
 
+import android.graphics.Color;
 import android.graphics.Path;
-import android.graphics.Point;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor(suppressConstructorProperties = true)
 public class Line implements Serializable {
     private int color;
 
-    @NonNull
-    private List<Point> points;
+    private List<Point> points = new ArrayList<Point>();
+
+    public Line() {
+        this(Color.BLACK);
+    }
 
     public Line(int color) {
-        this(color, new ArrayList<Point>());
+        this.color = color;
     }
 
     public void addPoint(Point point) {

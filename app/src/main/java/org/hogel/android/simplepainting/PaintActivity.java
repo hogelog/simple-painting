@@ -1,24 +1,49 @@
 package org.hogel.android.simplepainting;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.google.common.base.Optional;
+import icepick.Icepick;
+import icepick.Icicle;
+import org.hogel.android.simplepainting.model.Line;
+import org.hogel.android.simplepainting.model.Point;
 import org.hogel.android.simplepainting.view.PaintView;
-import roboguice.activity.RoboActivity;
-import roboguice.inject.InjectView;
 
+import java.util.ArrayList;
 
-public class PaintActivity extends RoboActivity {
+public class PaintActivity extends Activity {
 
     @InjectView(R.id.paint_view)
     PaintView paintView;
 
+    @Icicle
+    ArrayList<Line> lines;
+
+    Optional<Line> currentPath = Optional.absent();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        if (savedInstanceState == null) {
+            lines = new ArrayList<Line>();
+        }
 
         setContentView(R.layout.activity_paint);
+        ButterKnife.inject(this);
+        setup();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -41,5 +66,49 @@ public class PaintActivity extends RoboActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setup() {
+        paintView.setPaintListener(new PaintView.PaintListener() {
+            @Override
+            public void surfaceChanged() {
+                paintView.updateCanvas(lines);
+            }
+
+            @Override
+            public void touchDown(float x, float y) {
+                final Point point = new Point(x, y);
+                if (!currentPath.isPresent()) {
+                    Line line = new Line(Color.BLACK);
+                    line.addPoint(point);
+                    lines.add(line);
+                    currentPath = Optional.of(line);
+                    paintView.updateCanvas(lines);
+                }
+            }
+
+            @Override
+            public void touchMove(float x, float y) {
+                final Point point = new Point(x, y);
+
+                if (currentPath.isPresent()) {
+                    Line line = currentPath.get();
+                    line.addPoint(point);
+                    paintView.updateCanvas(lines);
+                }
+            }
+
+            @Override
+            public void touchUp(float x, float y) {
+                final Point point = new Point(x, y);
+
+                if (currentPath.isPresent()) {
+                    Line line = currentPath.get();
+                    line.addPoint(point);
+                    currentPath = Optional.absent();
+                    paintView.updateCanvas(lines);
+                }
+            }
+        });
     }
 }
