@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def releaseSigningProperties = "${System.env["HOME"]}/.gradle/signing/release.properties"
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -11,10 +13,25 @@ android {
         versionCode 1
         versionName "0.0.1"
     }
+
+    signingConfigs {
+        release {
+            if (new File(releaseSigningProperties).exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(file(releaseSigningProperties)))
+                storeFile file(props['STORE_FILE'])
+                storePassword props['STORE_PASSWORD']
+                keyAlias props['KEY_ALIAS']
+                keyPassword props['KEY_PASSWORD']
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
