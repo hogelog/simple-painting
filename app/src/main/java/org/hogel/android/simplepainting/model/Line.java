@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Path;
 import lombok.Data;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class Line implements Serializable {
 
     private final List<Point> points = new ArrayList<Point>();
 
-    private final Path path = new Path();
+    private transient Path path = new Path();
 
     public Line() {
         this(Color.BLACK);
@@ -23,6 +25,20 @@ public class Line implements Serializable {
     public Line(int color) {
         this.color = color;
     }
+
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		stream.defaultReadObject();
+
+        path = new Path();
+        for (int i = 0; i < points.size(); i++) {
+            final Point point = points.get(i);
+            if (i == 0) {
+                path.moveTo(point.getX(), point.getY());
+            } else {
+                path.lineTo(point.getX(), point.getY());
+            }
+        }
+	}
 
     public void addPoint(Point point) {
         if (points.isEmpty()) {
