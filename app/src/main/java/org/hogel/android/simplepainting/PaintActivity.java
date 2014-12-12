@@ -32,7 +32,7 @@ public class PaintActivity extends Activity {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
         if (savedInstanceState == null) {
-            lines = new ArrayList<Line>();
+            lines = new ArrayList<>();
         }
 
         setContentView(R.layout.activity_paint);

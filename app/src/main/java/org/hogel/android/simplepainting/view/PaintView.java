@@ -1,6 +1,7 @@
 package org.hogel.android.simplepainting.view;
 
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -54,6 +55,7 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
         linePaint.setStrokeWidth(DEFAULT_WIDTH);
         linePaint.setStrokeCap(Paint.Cap.ROUND);
         linePaint.setStrokeJoin(Paint.Join.ROUND);
+        linePaint.setMaskFilter(new BlurMaskFilter(3, BlurMaskFilter.Blur.NORMAL));
 
         getHolder().addCallback(this);
     }
