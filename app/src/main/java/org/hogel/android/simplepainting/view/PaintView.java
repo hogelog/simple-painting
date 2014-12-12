@@ -24,6 +24,8 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
         void touchMove(float x, float y);
 
         void touchUp(float x, float y);
+
+        void touchHistoricalMove(float x, float y);
     }
 
     private static final float DEFAULT_WIDTH = 16.0f;
@@ -82,9 +84,11 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                triggerHistoricalMoveEvents(event, listener);
                 listener.touchDown(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_MOVE:
+                triggerHistoricalMoveEvents(event, listener);
                 listener.touchMove(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_UP:
@@ -92,6 +96,13 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
                 return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    private void triggerHistoricalMoveEvents(MotionEvent event, PaintListener listener) {
+        final int historySize = event.getHistorySize();
+        for (int i = 0; i < historySize; i++) {
+            listener.touchHistoricalMove(event.getHistoricalX(i), event.getHistoricalY(i));
+        }
     }
 
     public void updateCanvas(List<Line> lines) {
@@ -105,7 +116,7 @@ public class PaintView extends SurfaceView implements SurfaceHolder.Callback {
 
         for (Line line : lines) {
             linePaint.setColor(line.getColor());
-            canvas.drawPath(line.toPath(), linePaint);
+            canvas.drawPath(line.getPath(), linePaint);
         }
     }
 

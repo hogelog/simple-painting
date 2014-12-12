@@ -10,9 +10,11 @@ import java.util.List;
 
 @Data
 public class Line implements Serializable {
-    private int color;
+    private final int color;
 
-    private List<Point> points = new ArrayList<Point>();
+    private final List<Point> points = new ArrayList<Point>();
+
+    private final Path path = new Path();
 
     public Line() {
         this(Color.BLACK);
@@ -23,36 +25,13 @@ public class Line implements Serializable {
     }
 
     public void addPoint(Point point) {
-        if (!points.isEmpty() && points.get(points.size() - 1).equals(point)) {
-            return;
-        }
-        points.add(point);
-        supplementPoints();
-    }
-
-    public Path toPath() {
-        final Path path = new Path();
         if (points.isEmpty()) {
-            return path;
+            path.moveTo(point.getX(), point.getY());
+            points.add(point);
+        } else {
+            points.add(point);
+            supplementPoints();
         }
-
-        final Point point1 = points.get(0);
-        path.moveTo(point1.x, point1.y);
-        for (int i = 1; i < points.size(); ++i) {
-            final Point point = points.get(i);
-            path.lineTo(point.x, point.y);
-        }
-        return path;
-    }
-
-    public float[] toArray() {
-        final float[] array = new float[points.size() * 2];
-        for (int i = 0; i < points.size(); ++i) {
-            final Point point = points.get(i);
-            array[i * 2] = point.x;
-            array[i * 2 + 1] = point.y;
-        }
-        return array;
     }
 
     private void supplementPoints() {
@@ -66,5 +45,6 @@ public class Line implements Serializable {
 
         point2.x = (point1.x + point2.x + point3.x) / 3;
         point2.y = (point1.y + point2.y + point3.y) / 3;
+        path.lineTo(point2.x, point2.y);
     }
 }

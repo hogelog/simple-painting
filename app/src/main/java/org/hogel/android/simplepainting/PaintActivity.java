@@ -99,6 +99,16 @@ public class PaintActivity extends Activity {
             }
 
             @Override
+            public void touchHistoricalMove(float x, float y) {
+                final Point point = new Point(x, y);
+
+                if (currentPath.isPresent()) {
+                    Line line = currentPath.get();
+                    line.addPoint(point);
+                }
+            }
+
+            @Override
             public void touchUp(float x, float y) {
                 final Point point = new Point(x, y);
 
